@@ -1,4 +1,3 @@
 # LIPS
-### Lisp Incredible ParSer
 
-A Scheme interpreter. The name is a joke, so is the project.
+Write you a Scheme in 48 hours, but using [Trifecta](http://hackage.haskell.org/package/trifecta).

@@ -32,3 +32,8 @@ lipsString = do
 
 lipsNumber :: Parser LipsVal
 lipsNumber = LipsNumber <$> integer
+
+parseExpr :: Parser LipsVal
+parseExpr =  lipsAtom
+         <|> lipsString
+         <|> lipsNumber

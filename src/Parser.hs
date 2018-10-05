@@ -33,7 +33,10 @@ lipsString = do
 lipsNumber :: Parser LipsVal
 lipsNumber = LipsNumber <$> integer
 
-parseExpr :: Parser LipsVal
-parseExpr =  lipsAtom
+parseLips :: Parser LipsVal
+parseLips =  lipsAtom
          <|> lipsString
          <|> lipsNumber
+
+readExpr :: String -> Result LipsVal
+readExpr input = parseString parseLips mempty input

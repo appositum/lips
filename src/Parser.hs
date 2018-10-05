@@ -29,3 +29,6 @@ lipsString = do
   str <- many (noneOf "\"")
   char '"'
   pure (LipsString str)
+
+lipsNumber :: Parser LipsVal
+lipsNumber = LipsNumber <$> integer

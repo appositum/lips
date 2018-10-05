@@ -6,7 +6,7 @@ import Text.Trifecta
 data LipsVal = LipsNumber Integer
              | LipsString String
              | LipsBool Bool
-             | LipsAtom Atom
+             | LipsAtom String
              deriving (Eq, Show)
 
 lipsSymbol :: Parser Char

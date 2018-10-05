@@ -1,11 +1,11 @@
 name:           lips
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/lips#readme>
-homepage:       https://github.com/githubuser/lips#readme
-bug-reports:    https://github.com/githubuser/lips/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2018 Author name here
+description:    Please see the README on GitHub at <https://github.com/appositum/lips#readme>
+homepage:       https://github.com/appositum/lips#readme
+bug-reports:    https://github.com/appositum/lips/issues
+author:         Eddie
+maintainer:     appositum@protonmail.com
+copyright:      2018 Eddie
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -16,17 +16,18 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/lips
+  location: https://github.com/appositum/lips
 
 library
   exposed-modules:
-      Lib
+      Parser
   other-modules:
       Paths_lips
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , trifecta
   default-language: Haskell2010
 
 executable lips-exe

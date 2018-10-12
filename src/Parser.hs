@@ -23,12 +23,21 @@ lipsAtom = do
       "#f" -> LipsBool False
       _    -> LipsAtom atom
 
+escape :: Parser String
+escape = do
+  q <- char '\\'
+  c <- oneOf "\\\"0nrvtbf"
+  pure [q, c]
+
+nonEscape :: Parser Char
+nonEscape = noneOf "\\\"\0\n\r\v\t\b\f"
+
 lipsString :: Parser LipsVal
 lipsString = do
   char '"'
-  str <- many (noneOf "\"")
+  str <- many $ pure <$> nonEscape <|> escape
   char '"'
-  pure (LipsString str)
+  pure (LipsString $ concat str)
 
 lipsNumber :: Parser LipsVal
 lipsNumber = LipsNumber <$> integer

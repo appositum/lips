@@ -48,4 +48,4 @@ parseLips =  lipsAtom
          <|> lipsNumber
 
 readExpr :: String -> Result LipsVal
-readExpr input = parseString parseLips mempty input
+readExpr = parseString parseLips mempty

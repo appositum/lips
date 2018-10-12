@@ -3,7 +3,8 @@ module Parser where
 import Control.Applicative
 import Text.Trifecta
 
-data LipsVal = LipsNumber Integer
+data LipsVal = LipsInteger Integer
+             | LipsFloat Double
              | LipsString String
              | LipsBool Bool
              | LipsAtom String
@@ -39,13 +40,23 @@ lipsString = do
   char '"'
   pure (LipsString $ concat str)
 
-lipsNumber :: Parser LipsVal
-lipsNumber = LipsNumber <$> integer
+lipsInteger :: Parser LipsVal
+lipsInteger = LipsInteger <$> integer
+
+lipsFloat :: Parser LipsVal
+lipsFloat = do
+  opt <- optional (char '-')
+  case opt of
+    Nothing -> LipsFloat <$> double
+    Just minus -> do
+      d <- double
+      pure $ LipsFloat (read (minus : show d) :: Double)
 
 parseLips :: Parser LipsVal
-parseLips =  lipsAtom
-         <|> lipsString
-         <|> lipsNumber
+parseLips =  lipsString
+         <|> try lipsFloat
+         <|> lipsInteger
+         <|> lipsAtom
 
 readExpr :: String -> Result LipsVal
 readExpr = parseString parseLips mempty

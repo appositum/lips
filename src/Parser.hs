@@ -57,6 +57,7 @@ lipsList :: Parser LipsVal
 lipsList = do
   char '\''
   char '('
+  spaces
   lst <- LipsList <$> sepBy parseLips spaces
   char ')'
   pure lst

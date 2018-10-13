@@ -8,6 +8,7 @@ data LipsVal = LipsInteger Integer
              | LipsString String
              | LipsBool Bool
              | LipsAtom String
+             | LipsList [LipsVal]
              deriving (Eq, Show)
 
 lipsSymbol :: Parser Char
@@ -52,11 +53,21 @@ lipsFloat = do
       d <- double
       pure $ LipsFloat (read (minus : show d) :: Double)
 
+lipsList :: Parser LipsVal
+lipsList = do
+  char '\''
+  char '('
+  spaces
+  lst <- LipsList <$> sepBy parseLips spaces
+  char ')'
+  pure lst
+
 parseLips :: Parser LipsVal
 parseLips =  lipsString
          <|> try lipsFloat
          <|> lipsInteger
          <|> lipsAtom
+         <|> lipsList
 
 readExpr :: String -> Result LipsVal
 readExpr = parseString parseLips mempty

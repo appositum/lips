@@ -21,5 +21,6 @@ replRead = do
 repl :: IO ()
 repl = do
   input <- replRead
-  unless (input == ":q" || input == ":quit") $
-    putStrLn input *> main
+  unless (input == ":q" || input == ":quit") $ do
+    print $ readExpr input
+    main

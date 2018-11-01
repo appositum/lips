@@ -1,7 +1,9 @@
 module Main where
 
+import Data.Char
 import Parser
 import System.Environment
+import Text.Trifecta
 
 main :: IO ()
 main = do

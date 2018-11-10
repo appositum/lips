@@ -39,25 +39,20 @@ lipsString = do
   char '"'
   str <- many $ pure <$> nonEscape <|> escape
   char '"'
-  pure (LipsString $ concat str)
+  pure $ LipsString (concat str)
 
 lipsInteger :: Parser LipsVal
 lipsInteger = LipsInteger <$> integer
 
 lipsFloat :: Parser LipsVal
-lipsFloat = do
-  opt <- optional (char '-')
-  case opt of
-    Nothing -> LipsFloat <$> double
-    Just minus -> do
-      d <- double
-      pure $ LipsFloat (read (minus : show d) :: Double)
+lipsFloat = LipsFloat <$> (signed <*> double) where
+  signed =  negate <$ char '-'
+        <|> id <$ char '+'
+        <|> pure id
 
 lipsList :: Parser LipsVal
 lipsList = do
-  char '\''
-  char '('
-  spaces
+  string "'("
   lst <- LipsList <$> sepBy parseLips spaces
   char ')'
   pure lst

@@ -52,9 +52,9 @@ lipsFloat = LipsFloat <$> (signed <*> double) where
 
 lipsList :: Parser LipsVal
 lipsList = do
-  string "'("
+  symbol "'("
   lst <- LipsList <$> sepBy parseLips spaces
-  char ')'
+  symbolic ')'
   pure lst
 
 parseLips :: Parser LipsVal

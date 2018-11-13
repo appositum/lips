@@ -10,7 +10,7 @@ main = do
   arg <- getArgs
   case arg of
     [] -> repl
-    (path:_) -> readFile path >>= print . readExpr
+    (path:_) -> readFile path >>= eval . readExpr
 
 replRead :: IO String
 replRead = do
@@ -22,5 +22,5 @@ repl :: IO ()
 repl = do
   input <- replRead
   unless (input == ":q" || input == ":quit") $ do
-    print $ readExpr input
+    eval $ readExpr input
     main

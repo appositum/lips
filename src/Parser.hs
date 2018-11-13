@@ -45,13 +45,10 @@ lipsInteger :: Parser LipsVal
 lipsInteger = LipsInteger <$> integer
 
 lipsFloat :: Parser LipsVal
-lipsFloat = do
-  opt <- optional (char '-')
-  case opt of
-    Nothing -> LipsFloat <$> double
-    Just minus -> do
-      d <- double
-      pure $ LipsFloat (read (minus : show d) :: Double)
+lipsFloat = fmap LipsFloat $ signed <*> double where
+  signed =  negate <$ char '-'
+        <|> id <$ char '+'
+        <|> pure id
 
 lipsList :: Parser LipsVal
 lipsList = do

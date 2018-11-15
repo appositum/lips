@@ -1,4 +1,10 @@
-module Parser where
+module Lips.Parser
+  ( parseLips
+  , readExpr
+  , _errDoc
+  , LipsVal
+  , Result(..)
+  ) where
 
 import Control.Applicative
 import Text.Trifecta
@@ -77,7 +83,3 @@ parseLips =  (lipsString <?> "string")
 
 readExpr :: String -> Result LipsVal
 readExpr = parseString (parseLips <?> "LIPS expression") mempty
-
-eval :: Result LipsVal -> IO ()
-eval (Failure err) = print $ _errDoc err
-eval (Success res) = print res

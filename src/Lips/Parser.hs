@@ -1,4 +1,10 @@
-module Parser where
+module Lips.Parser
+  ( parseLips
+  , readExpr
+  , _errDoc
+  , LipsVal
+  , Result(..)
+  ) where
 
 import Control.Applicative
 import Text.Trifecta
@@ -9,7 +15,16 @@ data LipsVal = LipsInteger Integer
              | LipsBool Bool
              | LipsAtom String
              | LipsList [LipsVal]
-             deriving (Eq, Show)
+             deriving Eq
+
+instance Show LipsVal where
+  show (LipsString str) = "\"" ++ str ++ "\""
+  show (LipsAtom name) = name
+  show (LipsInteger n) = show n
+  show (LipsFloat n) = show n
+  show (LipsBool True) = "#t"
+  show (LipsBool False) = "#f"
+  show (LipsList list) = "'(" ++ unwords (map show list) ++ ")"
 
 lipsSymbol :: Parser Char
 lipsSymbol = oneOf "!#$%&|*+-/:><?=@^_~"
@@ -58,11 +73,11 @@ lipsList = do
   pure lst
 
 parseLips :: Parser LipsVal
-parseLips =  lipsString
-         <|> try lipsFloat
-         <|> lipsInteger
-         <|> lipsAtom
-         <|> lipsList
+parseLips =  (lipsString <?> "string")
+         <|> (try lipsFloat <?> "float")
+         <|> (lipsInteger <?> "integer")
+         <|> (lipsAtom <?> "atom")
+         <|> (lipsList <?> "list")
 
 readExpr :: String -> Result LipsVal
-readExpr = parseString parseLips mempty
+readExpr = parseString (parseLips <?> "LIPS expression") mempty

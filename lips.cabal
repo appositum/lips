@@ -20,7 +20,9 @@ source-repository head
 
 library
   exposed-modules:
-      Parser
+      Lips
+      Lips.Eval
+      Lips.Parser
   other-modules:
       Paths_lips
   hs-source-dirs:

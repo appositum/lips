@@ -1,13 +1,20 @@
 module Main where
 
-import Data.Char
-import Parser
+import Control.Monad (unless)
+import Lips
 import System.Environment
-import Text.Trifecta
+import System.IO
 
 main :: IO ()
 main = do
   arg <- getArgs
   case arg of
-    [] -> putStrLn "lips: no input file"
-    (path:_) -> readFile path >>= print . readExpr
+    [] -> repl
+    (path:_) -> readFile path >>= eval . readExpr
+
+repl :: IO ()
+repl = do
+  input <- putStr "LIPS> " *> hFlush stdout *> getLine
+  unless (input == ":q" || input == ":quit") $ do
+    eval $ readExpr input
+    main

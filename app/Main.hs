@@ -17,4 +17,4 @@ repl = do
   input <- putStr "LIPS> " *> hFlush stdout *> getLine
   unless (input == ":q" || input == ":quit") $ do
     eval $ readExpr input
-    main
+    repl

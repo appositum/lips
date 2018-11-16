@@ -29,7 +29,8 @@ library
       src
   build-depends:
       base >=4.7 && <5
-    , trifecta
+    , megaparsec
+    , parsers-megaparsec
   default-language: Haskell2010
 
 executable lips-exe
@@ -42,7 +43,8 @@ executable lips-exe
   build-depends:
       base >=4.7 && <5
     , lips
-    , trifecta
+    , megaparsec
+    , parsers-megaparsec
   default-language: Haskell2010
 
 test-suite lips-test

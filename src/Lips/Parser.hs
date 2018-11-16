@@ -1,9 +1,8 @@
 module Lips.Parser
   ( parse
   , readExpr
-  , Error
   , LipsVal(..)
-  , Result(..)
+  , ParseError
   ) where
 
 import Control.Applicative
@@ -13,10 +12,9 @@ import Text.Megaparsec (runParser, ParseErrorBundle)
 import Text.Megaparsec.Parsers
 
 type Parser a = ParsecT Void String Identity a
-type Error = ParseErrorBundle String Void
-type Result = Either Error
+type ParseError = ParseErrorBundle String Void
 
-parse :: Parser a -> String -> String -> Result a
+parse :: Parser a -> String -> String -> Either ParseError a
 parse = runParser . unParsecT
 
 
@@ -100,5 +98,5 @@ parseLips =  lipsString
          <|> lipsQuoted
          <|> parens (try lipsList <|> lipsDottedList)
 
-readExpr :: String -> Result LipsVal
+readExpr :: String -> Either ParseError LipsVal
 readExpr = parse parseLips "Syntax error"

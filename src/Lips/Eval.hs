@@ -7,7 +7,7 @@ import Data.List (foldl1')
 import Lips.Parser
 import Text.Megaparsec (errorBundlePretty)
 
-printError :: Error -> IO ()
+printError :: ParseError -> IO ()
 printError = putStr . errorBundlePretty
 
 unpack :: LipsVal -> Integer

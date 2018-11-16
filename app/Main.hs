@@ -12,7 +12,7 @@ main = do
     [] -> repl
     (x:_) -> replEval (readExpr x)
 
-replEval :: Result LipsVal -> IO ()
+replEval :: Either ParseError LipsVal -> IO ()
 replEval (Left  err) = printError err
 replEval (Right res) = print $ eval res
 

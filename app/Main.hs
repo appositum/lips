@@ -10,11 +10,15 @@ main = do
   arg <- getArgs
   case arg of
     [] -> repl
-    (path:_) -> readFile path >>= eval . readExpr
+    (x:_) -> replEval (readExpr x)
+
+replEval :: Either ParseError LipsVal -> IO ()
+replEval (Left  err) = printError err
+replEval (Right res) = print $ eval res
 
 repl :: IO ()
 repl = do
-  input <- putStr "LIPS> " *> hFlush stdout *> getLine
+  input <- putStr "LIPS> " >> hFlush stdout >> getLine
   unless (input == ":q" || input == ":quit") $ do
-    eval $ readExpr input
+    replEval (readExpr input)
     repl

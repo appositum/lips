@@ -1,13 +1,22 @@
 module Lips.Parser
-  ( parseLips
+  ( parse
   , readExpr
-  , _errDoc
-  , LipsVal
-  , Result(..)
+  , LipsVal(..)
+  , ParseError
   ) where
 
 import Control.Applicative
-import Text.Trifecta
+import Data.Functor.Identity (Identity)
+import Data.Void (Void)
+import Text.Megaparsec (runParser, ParseErrorBundle)
+import Text.Megaparsec.Parsers
+
+type Parser a = ParsecT Void String Identity a
+type ParseError = ParseErrorBundle String Void
+
+parse :: Parser a -> String -> String -> Either ParseError a
+parse = runParser . unParsecT
+
 
 data LipsVal = LipsInteger Integer
              | LipsFloat Double
@@ -15,6 +24,7 @@ data LipsVal = LipsInteger Integer
              | LipsBool Bool
              | LipsAtom String
              | LipsList [LipsVal]
+             | LipsDottedList [LipsVal] LipsVal
              deriving Eq
 
 instance Show LipsVal where
@@ -66,18 +76,27 @@ lipsFloat = LipsFloat <$> (signed <*> double) where
         <|> pure id
 
 lipsList :: Parser LipsVal
-lipsList = do
-  symbol "'("
-  lst <- LipsList <$> sepBy parseLips spaces
-  symbolic ')'
-  pure lst
+lipsList = LipsList <$> parseLips `sepBy` spaces
+
+lipsDottedList :: Parser LipsVal
+lipsDottedList = do
+  head <- parseLips `endBy` spaces
+  tail <- char '.' >> spaces >> parseLips
+  pure $ LipsDottedList head tail
+
+lipsQuoted :: Parser LipsVal
+lipsQuoted = do
+  char '\''
+  x <- parseLips
+  pure $ LipsList [LipsAtom "quote", x]
 
 parseLips :: Parser LipsVal
-parseLips =  (lipsString <?> "string")
-         <|> (try lipsFloat <?> "float")
-         <|> (lipsInteger <?> "integer")
-         <|> (lipsAtom <?> "atom")
-         <|> (lipsList <?> "list")
+parseLips =  lipsString
+         <|> try lipsFloat
+         <|> try lipsInteger
+         <|> lipsAtom
+         <|> lipsQuoted
+         <|> parens (try lipsList <|> lipsDottedList)
 
-readExpr :: String -> Result LipsVal
-readExpr = parseString (parseLips <?> "LIPS expression") mempty
+readExpr :: String -> Either ParseError LipsVal
+readExpr = parse parseLips "Syntax error"

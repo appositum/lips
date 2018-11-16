@@ -12,12 +12,13 @@ main = do
     [] -> repl
     (x:_) -> replEval (readExpr x)
 
+replEval :: Result LipsVal -> IO ()
 replEval (Left  err) = printError err
 replEval (Right res) = print $ eval res
 
 repl :: IO ()
 repl = do
-  input <- putStr "LIPS> " *> hFlush stdout *> getLine
+  input <- putStr "LIPS> " >> hFlush stdout >> getLine
   unless (input == ":q" || input == ":quit") $ do
     replEval (readExpr input)
     repl

@@ -26,6 +26,7 @@ data LipsVal = LipsInteger Integer
              | LipsBool Bool
              | LipsAtom String
              | LipsList [LipsVal]
+             | LipsDottedList [LipsVal] LipsVal
              deriving Eq
 
 instance Show LipsVal where
@@ -77,18 +78,27 @@ lipsFloat = LipsFloat <$> (signed <*> double) where
         <|> pure id
 
 lipsList :: Parser LipsVal
-lipsList = do
-  symbol "'("
-  lst <- LipsList <$> sepBy parseLips spaces
-  symbolic ')'
-  pure lst
+lipsList = LipsList <$> parseLips `sepBy` spaces
+
+lipsDottedList :: Parser LipsVal
+lipsDottedList = do
+  head <- parseLips `endBy` spaces
+  tail <- char '.' >> spaces >> parseLips
+  pure $ LipsDottedList head tail
+
+lipsQuoted :: Parser LipsVal
+lipsQuoted = do
+  char '\''
+  x <- parseLips
+  pure $ LipsList [LipsAtom "quote", x]
 
 parseLips :: Parser LipsVal
 parseLips =  lipsString
          <|> try lipsFloat
-         <|> lipsInteger
+         <|> try lipsInteger
          <|> lipsAtom
-         <|> lipsList
+         <|> lipsQuoted
+         <|> parens (try lipsList <|> lipsDottedList)
 
 readExpr :: String -> Result LipsVal
 readExpr = parse parseLips "Syntax error"

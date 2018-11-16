@@ -1,13 +1,24 @@
 module Lips.Parser
-  ( parseLips
+  ( parse
   , readExpr
-  , _errDoc
-  , LipsVal
+  , Error
+  , LipsVal(..)
   , Result(..)
   ) where
 
 import Control.Applicative
-import Text.Trifecta
+import Data.Functor.Identity (Identity)
+import Data.Void (Void)
+import Text.Megaparsec (runParser, ParseErrorBundle)
+import Text.Megaparsec.Parsers
+
+type Parser a = ParsecT Void String Identity a
+type Error = ParseErrorBundle String Void
+type Result = Either Error
+
+parse :: Parser a -> String -> String -> Result a
+parse = runParser . unParsecT
+
 
 data LipsVal = LipsInteger Integer
              | LipsFloat Double
@@ -73,11 +84,11 @@ lipsList = do
   pure lst
 
 parseLips :: Parser LipsVal
-parseLips =  (lipsString <?> "string")
-         <|> (try lipsFloat <?> "float")
-         <|> (lipsInteger <?> "integer")
-         <|> (lipsAtom <?> "atom")
-         <|> (lipsList <?> "list")
+parseLips =  lipsString
+         <|> try lipsFloat
+         <|> lipsInteger
+         <|> lipsAtom
+         <|> lipsList
 
 readExpr :: String -> Result LipsVal
-readExpr = parseString (parseLips <?> "LIPS expression") mempty
+readExpr = parse parseLips "Syntax error"

@@ -3,5 +3,5 @@ module Lips
   , module Lips.Parser
   ) where
 
-import Lips.Eval
-import Lips.Parser
+import           Lips.Eval
+import           Lips.Parser

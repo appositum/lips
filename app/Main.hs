@@ -1,15 +1,15 @@
 module Main where
 
-import Control.Monad (unless)
-import Lips
-import System.Environment
-import System.IO
+import           Control.Monad      (unless)
+import           Lips
+import           System.Environment
+import           System.IO
 
 main :: IO ()
 main = do
   arg <- getArgs
   case arg of
-    [] -> repl
+    []    -> repl
     (x:_) -> replEval (readExpr x)
 
 replEval :: Either ParseError LipsVal -> IO ()

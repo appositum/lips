@@ -5,11 +5,11 @@ module Lips.Parser
   , ParseError
   ) where
 
-import Control.Applicative
-import Data.Functor.Identity (Identity)
-import Data.Void (Void)
-import Text.Megaparsec (runParser, ParseErrorBundle)
-import Text.Megaparsec.Parsers
+import           Control.Applicative
+import           Data.Functor.Identity   (Identity)
+import           Data.Void               (Void)
+import           Text.Megaparsec         (ParseErrorBundle, runParser)
+import           Text.Megaparsec.Parsers
 
 type Parser a = ParsecT Void String Identity a
 type ParseError = ParseErrorBundle String Void
@@ -29,12 +29,12 @@ data LipsVal = LipsInteger Integer
 
 instance Show LipsVal where
   show (LipsString str) = "\"" ++ str ++ "\""
-  show (LipsAtom name) = name
-  show (LipsInteger n) = show n
-  show (LipsFloat n) = show n
-  show (LipsBool True) = "#t"
+  show (LipsAtom name)  = name
+  show (LipsInteger n)  = show n
+  show (LipsFloat n)    = show n
+  show (LipsBool True)  = "#t"
   show (LipsBool False) = "#f"
-  show (LipsList list) = "'(" ++ unwords (map show list) ++ ")"
+  show (LipsList list)  = "'(" ++ unwords (map show list) ++ ")"
 
 lipsSymbol :: Parser Char
 lipsSymbol = oneOf "!#$%&|*+-/:><?=@^_~"

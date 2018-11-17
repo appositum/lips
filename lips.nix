@@ -11,4 +11,7 @@ mkDerivation {
   doHaddock = false;
   homepage = "https://github.com/appositum/lips#readme";
   license = stdenv.lib.licenses.asl20;
+  shellHook = ''
+  cabal v1-run
+  '';
 }

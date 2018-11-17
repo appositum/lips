@@ -3,9 +3,9 @@ module Lips.Eval
   , printError
   ) where
 
-import Data.List (foldl1')
-import Lips.Parser
-import Text.Megaparsec (errorBundlePretty)
+import           Data.List       (foldl1')
+import           Lips.Parser
+import           Text.Megaparsec (errorBundlePretty)
 
 printError :: ParseError -> IO ()
 printError = putStr . errorBundlePretty
@@ -36,7 +36,7 @@ apply :: String -> [LipsVal] -> LipsVal
 apply func args = maybe (LipsBool False) ($ args) $ lookup func operations
 
 eval :: LipsVal -> LipsVal
-eval val@(LipsString _) = val
-eval val@(LipsInteger _) = val
-eval val@(LipsAtom _) = val
+eval val@(LipsString _)              = val
+eval val@(LipsInteger _)             = val
+eval val@(LipsAtom _)                = val
 eval (LipsList (LipsAtom func:args)) = apply func (map eval args)

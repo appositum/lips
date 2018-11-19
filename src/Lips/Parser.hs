@@ -99,4 +99,4 @@ parseLips =  lipsString
          <|> parens (try lipsList <|> lipsDottedList)
 
 readExpr :: String -> Either ParseError LipsVal
-readExpr = parse parseLips "Syntax error"
+readExpr = parse parseLips "(input)"

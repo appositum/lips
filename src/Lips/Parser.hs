@@ -6,7 +6,9 @@ module Lips.Parser
   ) where
 
 import           Control.Applicative
+import           Data.Char               (digitToInt)
 import           Data.Functor.Identity   (Identity)
+import           Data.List               (foldl')
 import           Data.Void               (Void)
 import           Text.Megaparsec         (ParseErrorBundle, runParser)
 import           Text.Megaparsec.Parsers
@@ -90,9 +92,37 @@ lipsQuoted = do
   x <- parseLips
   pure $ LipsList [LipsAtom "quote", x]
 
+toDecimal :: Integer -> String -> Integer
+toDecimal base =
+  foldl' (\x z -> base * x + fromIntegral (digitToInt z)) 0
+
+lipsBin :: Parser LipsVal
+lipsBin = fmap LipsInteger $ do
+  char '0'
+  oneOf "bB"
+  b <- some (oneOf "01")
+  pure $ toDecimal 2 b
+
+lipsOct :: Parser LipsVal
+lipsOct = fmap LipsInteger $ do
+  char '0'
+  oneOf "oO"
+  o <- some (oneOf ['0'..'7'])
+  pure $ toDecimal 8 o
+
+lipsHex :: Parser LipsVal
+lipsHex = fmap LipsInteger $ do
+  char '0'
+  oneOf "xX"
+  h <- some $ digit <|> oneOf (['a'..'f'] ++ ['A'..'F'])
+  pure $ toDecimal 16 h
+
 parseLips :: Parser LipsVal
 parseLips =  lipsString
          <|> try lipsFloat
+         <|> try lipsBin
+         <|> try lipsHex
+         <|> try lipsOct
          <|> try lipsInteger
          <|> lipsAtom
          <|> lipsQuoted

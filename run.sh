@@ -1,3 +1,3 @@
 #!/bin/sh
 
-nix-shell --run "cabal v1-run"
+nix-build && ./result/bin/lips-exe

@@ -1,12 +1,12 @@
-{ mkDerivation, base, megaparsec_7_0_4, mtl, parsers, stdenv, text, bytestring }:
+{ mkDerivation, base, megaparsec, mtl, parsers-megaparsec, stdenv, text, bytestring }:
 mkDerivation {
   pname = "lips";
   version = "0.1.0.0";
   src = ./.;
   isLibrary = true;
   isExecutable = true;
-  libraryHaskellDepends = [ base megaparsec_7_0_4 mtl parsers text bytestring ];
-  executableHaskellDepends = [ base megaparsec_7_0_4 mtl parsers text bytestring ];
+  libraryHaskellDepends = [ base megaparsec mtl parsers-megaparsec text bytestring ];
+  executableHaskellDepends = [ base megaparsec mtl parsers-megaparsec text bytestring ];
   testHaskellDepends = [ base ];
   doHaddock = false;
   homepage = "https://github.com/appositum/lips#readme";

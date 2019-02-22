@@ -36,7 +36,5 @@ apply :: String -> [LipsVal] -> LipsVal
 apply func args = maybe (LipsBool False) ($ args) $ lookup func operations
 
 eval :: LipsVal -> LipsVal
-eval val@(LipsString _)              = val
-eval val@(LipsInteger _)             = val
-eval val@(LipsAtom _)                = val
 eval (LipsList (LipsAtom func:args)) = apply func (map eval args)
+eval val = val
